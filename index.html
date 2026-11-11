@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS - Arcade & Gaming Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        neon: {
+                            cyan: '#00f3ff',
+                            pink: '#ff007f',
+                            purple: '#9d00ff',
+                            green: '#00ff66',
+                            dark: '#0a0a12',
+                            card: '#121220'
+                        }
+                    },
+                    boxShadow: {
+                        'neon-cyan': '0 0 15px rgba(0, 243, 255, 0.5), 0 0 30px rgba(0, 243, 255, 0.2)',
+                        'neon-pink': '0 0 15px rgba(ff, 0, 127, 0.5), 0 0 30px rgba(ff, 0, 127, 0.2)',
+                        'neon-purple': '0 0 15px rgba(157, 0, 255, 0.5)'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome & Phosphor Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Orbitron & Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Orbitron:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #06060c;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Custom Glowing Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a12;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #9d00ff;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00f3ff;
+        }
+        /* Glow animations */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.8; filter: drop-shadow(0 0 15px #00f3ff); }
+            50% { opacity: 0.4; filter: drop-shadow(0 0 5px #00f3ff); }
+        }
+        .animate-glow {
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-neon-pink selection:text-white">
+
+    <!-- NAV BAR -->
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-neon-dark/80 border-b border-purple-900/40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="scrollToSection('hero')">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-neon-cyan via-neon-purple to-neon-pink flex items-center justify-center shadow-neon-cyan">
+                        <i class="fa-solid font-bold fa-gamepad text-xl text-black"></i>
+                    </div>
+                    <span class="font-orbitron text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-pink">
+                        NEXUS<span class="text-xs text-neon-cyan font-normal ml-1 border border-neon-cyan/50 px-1.5 py-0.5 rounded">HUB</span>
+                    </span>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden md:flex space-x-8 font-orbitron text-sm uppercase tracking-wider font-semibold">
+                    <a href="#hero" class="text-gray-300 hover:text-neon-cyan transition-colors duration-200">Inicio</a>
+                    <a href="#games" class="text-gray-300 hover:text-neon-pink transition-colors duration-200">Juegos</a>
+                    <a href="#arcade" class="text-neon-green hover:text-white transition-colors duration-200 flex items-center gap-1">
+                        <i class="fa-solid fa-bolt text-xs animate-pulse"></i> Mini Arcade
+                    </a>
+                    <a href="#news" class="text-gray-300 hover:text-neon-purple transition-colors duration-200">Noticias</a>
+                    <a href="#contact" class="text-gray-300 hover:text-neon-cyan transition-colors duration-200">Contacto</a>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="#arcade" class="px-5 py-2.5 rounded-xl font-orbitron font-bold text-xs uppercase bg-gradient-to-r from-neon-purple to-neon-pink text-white hover:opacity-90 transition shadow-neon-purple">
+                        ¡Jugar Ahora!
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Toggle Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-gray-400 hover:text-white focus:outline-none p-2">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-neon-card border-b border-purple-900/40 px-4 pt-2 pb-6 space-y-3 font-orbitron">
+            <a href="#hero" class="block text-gray-300 hover:text-neon-cyan py-2 border-b border-gray-800">Inicio</a>
+            <a href="#games" class="block text-gray-300 hover:text-neon-pink py-2 border-b border-gray-800">Juegos</a>
+            <a href="#arcade" class="block text-neon-green py-2 border-b border-gray-800">Mini Arcade</a>
+            <a href="#news" class="block text-gray-300 hover:text-neon-purple py-2 border-b border-gray-800">Noticias</a>
+            <a href="#contact" class="block text-gray-300 hover:text-neon-cyan py-2">Contacto</a>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- HERO SECTION -->
+        <section id="hero" class="relative py-20 lg:py-32 overflow-hidden flex items-center justify-center">
+            <!-- Background Glows -->
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-neon-purple/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute bottom-10 right-10 w-80 h-80 bg-neon-cyan/15 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <span class="inline-block px-4 py-1.5 rounded-full bg-purple-900/40 border border-neon-purple text-neon-cyan font-orbitron text-xs tracking-widest uppercase mb-6">
+                    ⚡ El Portal Gaming Definitivo
+                </span>
+                <h1 class="text-4xl sm:text-6xl lg:text-7xl font-orbitron font-black text-white tracking-tight leading-tight mb-6">
+                    EXPLORA NUEVAS <br class="hidden sm:block"/>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink">
+                        DIMENSIONES DE JUEGO
+                    </span>
+                </h1>
+                <p class="max-w-2xl mx-auto text-gray-400 text-base sm:text-lg mb-10">
+                    Descubre los títulos más aclamados, ponte al día con las últimas noticias de la industria y desafía tus habilidades directamente en nuestro minijuego Arcade retro-futurista.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#games" class="px-8 py-4 rounded-xl font-orbitron font-bold text-sm bg-neon-cyan text-black hover:bg-cyan-300 transition-all duration-300 shadow-neon-cyan">
+                        Ver Catálogo
+                    </a>
+                    <a href="#arcade" class="px-8 py-4 rounded-xl font-orbitron font-bold text-sm bg-transparent border border-neon-pink text-neon-pink hover:bg-neon-pink/10 transition-all duration-300 shadow-neon-pink">
+                        Desafío Arcade
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- GAMES SECTION -->
+        <section id="games" class="py-16 bg-neon-dark/60 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <!-- Section Title & Filter Bar -->
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                    <div>
+                        <h2 class="text-3xl sm:text-4xl font-orbitron font-bold text-white mb-2">
+                            CATÁLOGO DE <span class="text-neon-cyan">JUEGOS</span>
+                        </h2>
+                        <p class="text-gray-400 text-sm">Explora nuestra colección seleccionada de títulos destacados.</p>
+                    </div>
+
+                    <!-- Filters & Search Bar -->
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <!-- Search input -->
+                        <div class="relative">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                            <input type="text" id="search-input" placeholder="Buscar juego..." class="w-full sm:w-60 bg-neon-card border border-gray-800 rounded-xl pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-neon-cyan transition-colors">
+                        </div>
+                        
+                        <!-- Category Filter Buttons -->
+                        <div class="flex flex-wrap gap-2" id="category-filters">
+                            <button data-category="all" class="filter-btn px-4 py-2 rounded-xl text-xs font-orbitron font-semibold uppercase border border-neon-cyan bg-neon-cyan text-black transition">
+                                Todos
+                            </button>
+                            <button data-category="Acción" class="filter-btn px-4 py-2 rounded-xl text-xs font-orbitron font-semibold uppercase border border-gray-800 bg-neon-card text-gray-300 hover:border-neon-purple transition">
+                                Acción
+                            </button>
+                            <button data-category="RPG" class="filter-btn px-4 py-2 rounded-xl text-xs font-orbitron font-semibold uppercase border border-gray-800 bg-neon-card text-gray-300 hover:border-neon-purple transition">
+                                RPG
+                            </button>
+                            <button data-category="Estrategia" class="filter-btn px-4 py-2 rounded-xl text-xs font-orbitron font-semibold uppercase border border-gray-800 bg-neon-card text-gray-300 hover:border-neon-purple transition">
+                                Estrategia
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Games Grid Container -->
+                <div id="games-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Dynamic Game Cards Inserted Here via JS -->
+                </div>
+
+            </div>
+        </section>
+
+        <!-- MINI ARCADE GAME SECTION -->
+        <section id="arcade" class="py-20 bg-gradient-to-b from-neon-dark/80 via-black to-neon-dark/90 border-y border-purple-900/30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <span class="inline-block px-3 py-1 rounded-full bg-neon-green/10 border border-neon-green text-neon-green font-orbitron text-xs uppercase mb-3">
+                    🕹️ Juego Integrado
+                </span>
+                <h2 class="text-3xl sm:text-5xl font-orbitron font-black text-white mb-4">
+                    NEON CYBER <span class="text-neon-pink">DASH</span>
+                </h2>
+                <p class="text-gray-400 max-w-xl mx-auto text-sm mb-8">
+                    Usa las teclas de flecha <span class="text-neon-cyan font-bold">IZQUIERDA / DERECHA</span> o desliza en tu pantalla para esquivar los obstáculos de energía.
+                </p>
+
+                <!-- Game Container -->
+                <div class="relative max-w-xl mx-auto bg-neon-card border-2 border-neon-purple rounded-2xl overflow-hidden shadow-neon-purple p-4">
+                    
+                    <!-- Top Game Info Bar -->
+                    <div class="flex justify-between items-center mb-3 px-2 font-orbitron">
+                        <div class="text-left">
+                            <span class="text-xs text-gray-400 block">SCORE</span>
+                            <span id="game-score" class="text-xl font-bold text-neon-cyan">0000</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 block">RÉCORD</span>
+                            <span id="game-high-score" class="text-xl font-bold text-neon-pink">0000</span>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Box -->
+                    <div class="relative w-full aspect-[4/3] bg-black rounded-xl overflow-hidden border border-purple-900/50">
+                        <canvas id="arcadeCanvas" class="w-full h-full block"></canvas>
+                        
+                        <!-- Game Over Overlay -->
+                        <div id="game-over-screen" class="absolute inset-0 bg-black/85 backdrop-blur-sm hidden flex flex-col items-center justify-center p-6 text-center">
+                            <h3 class="font-orbitron text-3xl font-black text-neon-pink mb-2">¡GAME OVER!</h3>
+                            <p class="text-gray-300 text-sm mb-1">Puntuación Final: <span id="final-score" class="text-neon-cyan font-bold">0</span></p>
+                            <p id="new-high-score-msg" class="text-neon-green font-orbitron text-xs mb-6 hidden">🎉 ¡NUEVA MEJOR PUNTUACIÓN!</p>
+                            <button id="restart-btn" class="px-6 py-3 bg-neon-cyan text-black font-orbitron font-bold rounded-xl text-sm hover:bg-cyan-300 transition shadow-neon-cyan">
+                                Reiniciar Juego
+                            </button>
+                        </div>
+
+                        <!-- Start Screen Overlay -->
+                        <div id="start-screen" class="absolute inset-0 bg-black/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 text-center">
+                            <i class="fa-solid fa-gamepad text-5xl text-neon-purple mb-4 animate-bounce"></i>
+                            <h3 class="font-orbitron text-2xl font-bold text-white mb-4">¿Listo para el Reto?</h3>
+                            <button id="start-btn" class="px-8 py-3 bg-gradient-to-r from-neon-purple to-neon-pink text-white font-orbitron font-bold rounded-xl text-sm hover:opacity-90 transition shadow-neon-pink">
+                                Iniciar Partida
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Touch Controls for Mobile -->
+                    <div class="flex justify-between gap-4 mt-4 md:hidden">
+                        <button id="btn-left" class="flex-1 py-4 bg-purple-900/40 border border-neon-cyan rounded-xl text-neon-cyan active:bg-neon-cyan active:text-black font-bold text-xl flex justify-center items-center">
+                            <i class="fa-solid fa-arrow-left"></i>
+                        </button>
+                        <button id="btn-right" class="flex-1 py-4 bg-purple-900/40 border border-neon-cyan rounded-xl text-neon-cyan active:bg-neon-cyan active:text-black font-bold text-xl flex justify-center items-center">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- GAMING NEWS SECTION -->
+        <section id="news" class="py-20 bg-neon-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-orbitron font-bold text-white mb-2">
+                        NOTICIAS <span class="text-neon-pink">RECIENTES</span>
+                    </h2>
+                    <p class="text-gray-400 text-sm">Mantente al día con lo último en eSports, lanzamientos y tecnología gamer.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- News Card 1 -->
+                    <article class="bg-neon-card border border-purple-900/30 rounded-2xl overflow-hidden hover:border-neon-pink/50 transition-all duration-300 group">
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80" alt="eSports Final" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 left-3 bg-neon-pink text-white font-orbitron text-[10px] font-bold px-2.5 py-1 rounded">eSports</span>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs text-gray-500 block mb-2">10 de Noviembre, 2026</span>
+                            <h3 class="font-orbitron font-bold text-white text-lg mb-3 group-hover:text-neon-pink transition-colors">
+                                Gran Final Mundial del Torneo Cyber Cup 2026
+                            </h3>
+                            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                                Más de 2 millones de espectadores sintonizaron la electrizante final donde Team Nexus se coronó campeón absoluto.
+                            </p>
+                            <a href="#" class="text-xs font-orbitron font-semibold text-neon-cyan hover:underline inline-flex items-center gap-1">
+                                Leer más <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- News Card 2 -->
+                    <article class="bg-neon-card border border-purple-900/30 rounded-2xl overflow-hidden hover:border-neon-cyan/50 transition-all duration-300 group">
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Hardware Tech" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 left-3 bg-neon-cyan text-black font-orbitron text-[10px] font-bold px-2.5 py-1 rounded">Hardware</span>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs text-gray-500 block mb-2">08 de Noviembre, 2026</span>
+                            <h3 class="font-orbitron font-bold text-white text-lg mb-3 group-hover:text-neon-cyan transition-colors">
+                                Nuevas Tarjetas Gráficas con Renderizado por IA
+                            </h3>
+                            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                                La última arquitectura de GPUs promete alcanzar 240 FPS estables a resolución 4K nativa con trazado de rayos.
+                            </p>
+                            <a href="#" class="text-xs font-orbitron font-semibold text-neon-cyan hover:underline inline-flex items-center gap-1">
+                                Leer más <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </article>
+
+                    <!-- News Card 3 -->
+                    <article class="bg-neon-card border border-purple-900/30 rounded-2xl overflow-hidden hover:border-neon-purple/50 transition-all duration-300 group">
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Lanzamientos" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <span class="absolute top-3 left-3 bg-neon-purple text-white font-orbitron text-[10px] font-bold px-2.5 py-1 rounded">Lanzamientos</span>
+                        </div>
+                        <div class="p-6">
+                            <span class="text-xs text-gray-500 block mb-2">05 de Noviembre, 2026</span>
+                            <h3 class="font-orbitron font-bold text-white text-lg mb-3 group-hover:text-neon-purple transition-colors">
+                                Revelado el Teaser del RPG Más Esperado del Año
+                            </h3>
+                            <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                                Un mundo abierto de más de 500 kilómetros cuadrados promete revolucionar las narrativas interactivas.
+                            </p>
+                            <a href="#" class="text-xs font-orbitron font-semibold text-neon-cyan hover:underline inline-flex items-center gap-1">
+                                Leer más <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                            </a>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONTACT SECTION -->
+        <section id="contact" class="py-20 bg-neon-dark/40 relative">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-neon-card border border-purple-900/50 rounded-2xl p-8 sm:p-12 shadow-2xl relative">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-orbitron font-bold text-white mb-2">
+                            ÚNETE A LA <span class="text-neon-cyan">COMUNIDAD</span>
+                        </h2>
+                        <p class="text-gray-400 text-sm">¿Tienes preguntas o quieres enviar tu videojuego? Escríbenos.</p>
+                    </div>
+
+                    <!-- Custom Form Notification Container -->
+                    <div id="form-message" class="hidden mb-6 p-4 rounded-xl text-sm font-orbitron text-center"></div>
+
+                    <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-400 mb-2">NOMBRE O NICKNAME</label>
+                            <input type="text" required placeholder="Ej: CyberGamer99" class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-neon-cyan transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-400 mb-2">CORREO ELECTRÓNICO</label>
+                            <input type="email" required placeholder="gamer@nexus.com" class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-neon-cyan transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-orbitron text-gray-400 mb-2">MENSAJE</label>
+                            <textarea rows="4" required placeholder="Escribe tu mensaje aquí..." class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-neon-cyan transition-colors"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-neon-cyan via-neon-purple to-neon-pink text-white font-orbitron font-bold text-sm rounded-xl hover:opacity-90 transition shadow-neon-purple">
+                            ENVIAR MENSAJE
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black border-t border-purple-900/40 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-neon-cyan to-neon-pink flex items-center justify-center">
+                    <i class="fa-solid fa-gamepad text-black font-bold"></i>
+                </div>
+                <span class="font-orbitron font-bold text-white text-lg">NEXUS HUB</span>
+            </div>
+
+            <p class="text-gray-500 text-xs text-center">
+                © 2026 NEXUS Gaming Portal. Todos los derechos reservados. Diseñado para Gamers.
+            </p>
+
+            <div class="flex space-x-6 text-gray-400">
+                <a href="#" class="hover:text-neon-cyan transition-colors"><i class="fa-brands fa-discord text-xl"></i></a>
+                <a href="#" class="hover:text-neon-pink transition-colors"><i class="fa-brands fa-twitch text-xl"></i></a>
+                <a href="#" class="hover:text-neon-purple transition-colors"><i class="fa-brands fa-youtube text-xl"></i></a>
+                <a href="#" class="hover:text-neon-green transition-colors"><i class="fa-brands fa-x-twitter text-xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- GAME DETAIL MODAL -->
+    <div id="game-modal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-neon-card border-2 border-neon-cyan rounded-2xl max-w-2xl w-full p-6 sm:p-8 relative shadow-neon-cyan">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- GAME CATALOG DATA ---
+        const gamesData = [
+            {
+                id: 1,
+                title: "Cyber Chronicles 2077",
+                category: "RPG",
+                image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=600&q=80",
+                description: "Un fascinante RPG en un mundo futurista donde tus decisiones moldean el destino de una metrópolis de neón.",
+                tags: ["Cyberpunk", "Mundo Abierto", "Acción"],
+                rating: "4.9/5"
+            },
+            {
+                id: 2,
+                title: "Shadow Blade Online",
+                category: "Acción",
+                image: "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=600&q=80",
+                description: "Domina el arte de las sombras y el combate con espadas en intensas batallas multijugador.",
+                tags: ["Combate", "Multijugador", "Sigilo"],
+                rating: "4.7/5"
+            },
+            {
+                id: 3,
+                title: "Galactic Tactics",
+                category: "Estrategia",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80",
+                description: "Construye tu flota estelar y conquista galaxias en este desafiante juego de estrategia por turnos.",
+                tags: ["Espacial", "Turnos", "Táctica"],
+                rating: "4.8/5"
+            },
+            {
+                id: 4,
+                title: "Neo Drift Racing",
+                category: "Acción",
+                image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80",
+                description: "Carreras de alta velocidad a través de circuitos de neón suspendidos en el aire.",
+                tags: ["Carreras", "Velocidad", "Arcade"],
+                rating: "4.6/5"
+            },
+            {
+                id: 5,
+                title: "Realm of Magic",
+                category: "RPG",
+                image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=600&q=80",
+                description: "Explora tierras místicas, aprende conjuros ancestrales y derrota a temibles dragones.",
+                tags: ["Fantasía", "Magia", "Aventura"],
+                rating: "4.9/5"
+            },
+            {
+                id: 6,
+                title: "Commander Alliance",
+                category: "Estrategia",
+                image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80",
+                description: "Dirige tropas militares en tiempo real y protege tus bases de invasiones enemigas.",
+                tags: ["Estrategia en Vivo", "Base", "Guerra"],
+                rating: "4.5/5"
+            }
+        ];
+
+        // --- RENDER GAMES ---
+        function renderGames(filterCategory = 'all', searchQuery = '') {
+            const grid = document.getElementById('games-grid');
+            grid.innerHTML = '';
+
+            const filtered = gamesData.filter(game => {
+                const matchesCategory = filterCategory === 'all' || game.category === filterCategory;
+                const matchesSearch = game.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      game.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-500 font-orbitron">
+                        <i class="fa-solid fa-ghost text-4xl mb-3"></i>
+                        <p>No se encontraron videojuegos que coincidan con tu búsqueda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(game => {
+                const card = document.createElement('div');
+                card.className = "bg-neon-card border border-purple-900/30 rounded-2xl overflow-hidden hover:border-neon-cyan hover:shadow-neon-cyan transition-all duration-300 flex flex-col justify-between group";
+                card.innerHTML = `
+                    <div>
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="${game.image}" alt="${game.title}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                            <span class="absolute top-3 right-3 bg-black/80 backdrop-blur-sm border border-neon-cyan text-neon-cyan text-xs font-orbitron font-bold px-2.5 py-1 rounded-lg">
+                                ⭐ ${game.rating}
+                            </span>
+                        </div>
+                        <div class="p-5">
+                            <h3 class="font-orbitron font-bold text-white text-xl mb-2 group-hover:text-neon-cyan transition-colors">${game.title}</h3>
+                            <p class="text-gray-400 text-xs sm:text-sm line-clamp-2 mb-4">${game.description}</p>
+                            <div class="flex flex-wrap gap-1.5 mb-4">
+                                ${game.tags.map(t => `<span class="bg-purple-950/80 border border-purple-800 text-purple-300 text-[10px] font-orbitron px-2 py-0.5 rounded-md">${t}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-5 pb-5">
+                        <button onclick="openModal(${game.id})" class="w-full py-2.5 bg-transparent border border-neon-cyan text-neon-cyan hover:bg-neon-cyan hover:text-black font-orbitron font-bold text-xs uppercase rounded-xl transition duration-300">
+                            Ver Detalles
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- FILTER & SEARCH EVENTS ---
+        let currentCategory = 'all';
+        let currentSearch = '';
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-neon-cyan', 'text-black', 'border-neon-cyan');
+                    b.classList.add('bg-neon-card', 'text-gray-300', 'border-gray-800');
+                });
+
+                e.target.classList.remove('bg-neon-card', 'text-gray-300', 'border-gray-800');
+                e.target.classList.add('bg-neon-cyan', 'text-black', 'border-neon-cyan');
+
+                currentCategory = e.target.getAttribute('data-category');
+                renderGames(currentCategory, currentSearch);
+            });
+        });
+
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderGames(currentCategory, currentSearch);
+        });
+
+        // --- MODAL FUNCTIONS ---
+        function openModal(gameId) {
+            const game = gamesData.find(g => g.id === gameId);
+            if (!game) return;
+
+            const modalContent = document.getElementById('modal-content');
+            modalContent.innerHTML = `
+                <div class="flex flex-col md:flex-row gap-6">
+                    <img src="${game.image}" alt="${game.title}" class="w-full md:w-1/2 h-56 object-cover rounded-xl border border-neon-cyan">
+                    <div class="flex-1">
+                        <span class="text-neon-pink font-orbitron text-xs font-bold uppercase tracking-wider">${game.category}</span>
+                        <h2 class="text-2xl font-orbitron font-bold text-white mb-2">${game.title}</h2>
+                        <p class="text-gray-300 text-sm mb-4">${game.description}</p>
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="text-xs text-gray-400 font-orbitron">Puntuación:</span>
+                            <span class="text-neon-cyan font-bold font-orbitron">${game.rating}</span>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            ${game.tags.map(t => `<span class="bg-purple-900/50 border border-purple-600 text-purple-200 text-xs px-2.5 py-1 rounded-md">${t}</span>`).join('')}
+                        </div>
+                        <button onclick="alert('¡Iniciando simulación de demo de ${game.title}!')" class="w-full py-3 bg-neon-cyan text-black font-orbitron font-bold text-sm rounded-xl hover:bg-cyan-300 transition shadow-neon-cyan">
+                            🎮 JUGAR DEMO AHORA
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('game-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+        }
+
+        // --- FORM HANDLING ---
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const msgBox = document.getElementById('form-message');
+            msgBox.className = "mb-6 p-4 rounded-xl text-sm font-orbitron text-center bg-neon-green/10 border border-neon-green text-neon-green";
+            msgBox.innerText = "¡Mensaje enviado con éxito! Nos pondremos en contacto pronto.";
+            msgBox.classList.remove('hidden');
+            e.target.reset();
+
+            setTimeout(() => {
+                msgBox.classList.add('hidden');
+            }, 4000);
+        }
+
+        // Mobile Menu Toggle
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // Smooth Scrolling Function
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // --- CANVAS MINI ARCADE GAME: "NEON CYBER DASH" ---
+        const canvas = document.getElementById('arcadeCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let isPlaying = false;
+        let score = 0;
+        let highScore = localStorage.getItem('nexus_arcade_highscore') || 0;
+        document.getElementById('game-high-score').innerText = String(highScore).padStart(4, '0');
+
+        let player = {
+            x: 0,
+            y: 0,
+            width: 30,
+            height: 30,
+            speed: 6,
+            dx: 0
+        };
+
+        let obstacles = [];
+        let frameCount = 0;
+        let animationId;
+
+        // Resize Canvas dynamically
+        function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width;
+            canvas.height = rect.height;
+            player.y = canvas.height - 45;
+            if (!isPlaying) {
+                player.x = canvas.width / 2 - player.width / 2;
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Keyboard Controls
+        document.addEventListener('keydown', (e) => {
+            if (!isPlaying) return;
+            if (e.key === 'ArrowLeft' || e.key === 'a') player.dx = -player.speed;
+            if (e.key === 'ArrowRight' || e.key === 'd') player.dx = player.speed;
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'ArrowRight' || e.key === 'd') {
+                player.dx = 0;
+            }
+        });
+
+        // Mobile Touch Buttons Controls
+        const btnLeft = document.getElementById('btn-left');
+        const btnRight = document.getElementById('btn-right');
+
+        btnLeft.addEventListener('touchstart', (e) => { e.preventDefault(); player.dx = -player.speed; });
+        btnLeft.addEventListener('touchend', (e) => { e.preventDefault(); player.dx = 0; });
+        btnLeft.addEventListener('mousedown', () => player.dx = -player.speed);
+        btnLeft.addEventListener('mouseup', () => player.dx = 0);
+
+        btnRight.addEventListener('touchstart', (e) => { e.preventDefault(); player.dx = player.speed; });
+        btnRight.addEventListener('touchend', (e) => { e.preventDefault(); player.dx = 0; });
+        btnRight.addEventListener('mousedown', () => player.dx = player.speed);
+        btnRight.addEventListener('mouseup', () => player.dx = 0);
+
+        function spawnObstacle() {
+            const size = Math.random() * 20 + 20;
+            const x = Math.random() * (canvas.width - size);
+            const speed = Math.random() * 2 + 3 + (score / 150); // Speed scales up with score
+            obstacles.push({ x, y: -size, width: size, height: size, speed });
+        }
+
+        function updateGame() {
+            if (!isPlaying) return;
+
+            frameCount++;
+            score++;
+            document.getElementById('game-score').innerText = String(score).padStart(4, '0');
+
+            // Move player
+            player.x += player.dx;
+            if (player.x < 0) player.x = 0;
+            if (player.x + player.width > canvas.width) player.x = canvas.width - player.width;
+
+            // Spawn obstacles
+            if (frameCount % Math.max(15, 45 - Math.floor(score / 100)) === 0) {
+                spawnObstacle();
+            }
+
+            // Clear canvas
+            ctx.fillStyle = '#06060c';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Cyber Grid Lines
+            ctx.strokeStyle = '#1e1b4b';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < canvas.width; i += 30) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, canvas.height);
+                ctx.stroke();
+            }
+
+            // Draw Player (Neon Cyan Ship)
+            ctx.shadowBlur = 12;
+            ctx.shadowColor = '#00f3ff';
+            ctx.fillStyle = '#00f3ff';
+            ctx.beginPath();
+            ctx.moveTo(player.x + player.width / 2, player.y);
+            ctx.lineTo(player.x + player.width, player.y + player.height);
+            ctx.lineTo(player.x, player.y + player.height);
+            ctx.closePath();
+            ctx.fill();
+
+            // Update & Draw Obstacles (Neon Pink Blocks)
+            ctx.shadowColor = '#ff007f';
+            ctx.fillStyle = '#ff007f';
+            for (let i = 0; i < obstacles.length; i++) {
+                let obs = obstacles[i];
+                obs.y += obs.speed;
+
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+
+                // Collision Detection
+                if (
+                    player.x < obs.x + obs.width &&
+                    player.x + player.width > obs.x &&
+                    player.y < obs.y + obs.height &&
+                    player.y + player.height > obs.y
+                ) {
+                    endGame();
+                    return;
+                }
+
+                // Remove out of bound obstacles
+                if (obs.y > canvas.height) {
+                    obstacles.splice(i, 1);
+                    i--;
+                }
+            }
+
+            ctx.shadowBlur = 0; // Reset shadow
+            animationId = requestAnimationFrame(updateGame);
+        }
+
+        function startGame() {
+            isPlaying = true;
+            score = 0;
+            obstacles = [];
+            frameCount = 0;
+            player.dx = 0;
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-over-screen').classList.add('hidden');
+            document.getElementById('new-high-score-msg').classList.add('hidden');
+            resizeCanvas();
+            updateGame();
+        }
+
+        function endGame() {
+            isPlaying = false;
+            cancelAnimationFrame(animationId);
+
+            document.getElementById('final-score').innerText = score;
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('nexus_arcade_highscore', highScore);
+                document.getElementById('game-high-score').innerText = String(highScore).padStart(4, '0');
+                document.getElementById('new-high-score-msg').classList.remove('hidden');
+            }
+
+            document.getElementById('game-over-screen').classList.remove('hidden');
+        }
+
+        document.getElementById('start-btn').addEventListener('click', startGame);
+        document.getElementById('restart-btn').addEventListener('click', startGame);
+
+        // INITIALIZATION ON LOAD
+        window.onload = function() {
+            renderGames();
+            resizeCanvas();
+        };
+    </script>
+</body>
+</html>
